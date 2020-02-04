@@ -1,5 +1,5 @@
 const POSITION = /^v\s+([\d\.\+\-eE]+)\s+([\d\.\+\-eE]+)\s+([\d\.\+\-eE]+)/
-const INDICES = /^f\s+(\d+)\/\d+\s+(\d+)\/\d+\s+(\d+)\/\d+/
+const INDICES = /^f\s+(\d+)(?:\/\d+){0,2}\s+(\d+)(?:\/\d+){0,2}\s+(\d+)(?:\/\d+){0,2}/
 
 const loadObjectFile = async loc => {
   const response = await fetch(loc)

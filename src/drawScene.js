@@ -18,8 +18,8 @@ const drawScene = (gl, programInfo, buffers, vCount, deltaTime = 0) => {
   const fieldOfView = (45 * Math.PI) / 180 // in radians
   const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight
   const zNear = 0.1
-  // const zFar = 100.0
-  const zFar = 10000.0
+  const zFar = 100.0 // cube
+  // const zFar = 10000.0 //deer
   const projectionMatrix = mat4.create()
 
   // note: glmatrix.js always has the first argument
@@ -35,14 +35,14 @@ const drawScene = (gl, programInfo, buffers, vCount, deltaTime = 0) => {
   mat4.translate(
     modelViewMatrix, // destination matrix
     modelViewMatrix, // matrix to translate
-    [-0.0, 0.0, -5000.0]
-    // [-0.0, 0.0, -6.0]
+    //[-0.0, -500.0, -5000.0] // deer
+    [-0.0, 0.0, -6.0] // peacock
   ) // amount to translate
 
   // TODO remove
   cubeRotation += deltaTime
   mat4.rotate(modelViewMatrix, modelViewMatrix, cubeRotation * 0.7, [0, 1, 0])
-  mat4.rotate(modelViewMatrix, modelViewMatrix, cubeRotation * 0.7, [0, 0, 1])
+  // mat4.rotate(modelViewMatrix, modelViewMatrix, cubeRotation * 0.7, [0, 0, 1])
 
   // Tell WebGL how to pull out the positions from the position
   // buffer into the vertexPosition attribute.
