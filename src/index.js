@@ -1,6 +1,6 @@
 import initShaderProgram from './initShaderProgram'
 import initBuffer from './initBuffer'
-import drawScene from './drawScene'
+import loop from './loop'
 
 const main = () => {
   const canvas = document.getElementById('canvas')
@@ -26,7 +26,7 @@ const main = () => {
 
   const buffer = initBuffer(gl)
 
-  drawScene(gl, programInfo, buffer)
+  loop(gl, programInfo, buffer)
 }
 
 window.onload = main
