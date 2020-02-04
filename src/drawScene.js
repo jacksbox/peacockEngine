@@ -1,4 +1,4 @@
-let squareRotation = 0.0
+let cubeRotation = 0.0
 
 const drawScene = (gl, programInfo, buffers, deltaTime) => {
   gl.clearColor(0.0, 0.0, 0.0, 1.0) // Clear to black, fully opaque
@@ -37,18 +37,14 @@ const drawScene = (gl, programInfo, buffers, deltaTime) => {
     [-0.0, 0.0, -6.0]
   ) // amount to translate
 
-  squareRotation += deltaTime
-  mat4.rotate(
-    modelViewMatrix, // destination matrix
-    modelViewMatrix, // matrix to rotate
-    squareRotation, // amount to rotate in radians
-    [0, 0, 1] // axis to rotate around
-  )
+  cubeRotation += deltaTime
+  mat4.rotate(modelViewMatrix, modelViewMatrix, cubeRotation * 0.7, [0, 1, 0])
+  mat4.rotate(modelViewMatrix, modelViewMatrix, cubeRotation * 0.7, [0, 0, 1])
 
   // Tell WebGL how to pull out the positions from the position
   // buffer into the vertexPosition attribute.
   {
-    const numComponents = 2 // pull out 2 values per iteration
+    const numComponents = 3 // pull out 2 values per iteration
     const type = gl.FLOAT // the data in the buffer is 32bit floats
     const normalize = false // don't normalize
     const stride = 0 // how many bytes to get from one set of values to the next
@@ -71,6 +67,9 @@ const drawScene = (gl, programInfo, buffers, deltaTime) => {
     gl.enableVertexAttribArray(programInfo.attribLocations.vertexColor)
   }
 
+  // Tell WebGL which indices to use to index the vertices
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.indices)
+
   // Tell WebGL to use our program when drawing
   gl.useProgram(programInfo.program)
 
@@ -79,9 +78,10 @@ const drawScene = (gl, programInfo, buffers, deltaTime) => {
   gl.uniformMatrix4fv(programInfo.uniformLocations.modelViewMatrix, false, modelViewMatrix)
 
   {
+    const vertexCount = 36
+    const type = gl.UNSIGNED_SHORT
     const offset = 0
-    const vertexCount = 4
-    gl.drawArrays(gl.TRIANGLE_STRIP, offset, vertexCount)
+    gl.drawElements(gl.TRIANGLES, vertexCount, type, offset)
   }
 }
 
