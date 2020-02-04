@@ -4,5 +4,9 @@
   "description": "simple javascript webgl engine",
   "main": "index.html",
   "author": "Mario Jäckle<github@jacksbox.de>",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
+  }
 }
