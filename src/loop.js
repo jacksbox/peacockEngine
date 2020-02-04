@@ -1,6 +1,6 @@
 import drawScene from './drawScene'
 
-const loop = (gl, programInfo, buffers) => {
+const loop = (gl, programInfo, buffers, vCount) => {
   let then = 0
 
   // Draw the scene repeatedly
@@ -9,7 +9,7 @@ const loop = (gl, programInfo, buffers) => {
     const deltaTime = nowS - then
     then = nowS
 
-    drawScene(gl, programInfo, buffers, deltaTime)
+    drawScene(gl, programInfo, buffers, vCount, deltaTime)
 
     requestAnimationFrame(render)
   }

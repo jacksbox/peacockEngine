@@ -1,8 +1,10 @@
 import initShaderProgram from './initShaderProgram'
 import initBuffer from './initBuffer'
+import loadObjectFile from './loadObjectFile'
 import loop from './loop'
+import drawScene from './drawScene'
 
-const main = () => {
+const main = async () => {
   const canvas = document.getElementById('canvas')
   const gl = canvas.getContext('webgl')
 
@@ -24,9 +26,10 @@ const main = () => {
     }
   }
 
-  const buffer = initBuffer(gl)
-
-  loop(gl, programInfo, buffer)
+  const objectData = await loadObjectFile('/resources/deer.obj')
+  const buffer = initBuffer(gl, objectData)
+  // drawScene(gl, programInfo, buffer, objectData.vCount)
+  loop(gl, programInfo, buffer, objectData.vCount)
 }
 
 window.onload = main

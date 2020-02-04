@@ -1,6 +1,6 @@
 let cubeRotation = 0.0
 
-const drawScene = (gl, programInfo, buffers, deltaTime) => {
+const drawScene = (gl, programInfo, buffers, vCount, deltaTime = 0) => {
   gl.clearColor(0.0, 0.0, 0.0, 1.0) // Clear to black, fully opaque
   gl.clearDepth(1.0) // Clear everything
   gl.enable(gl.DEPTH_TEST) // Enable depth testing
@@ -18,7 +18,8 @@ const drawScene = (gl, programInfo, buffers, deltaTime) => {
   const fieldOfView = (45 * Math.PI) / 180 // in radians
   const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight
   const zNear = 0.1
-  const zFar = 100.0
+  // const zFar = 100.0
+  const zFar = 10000.0
   const projectionMatrix = mat4.create()
 
   // note: glmatrix.js always has the first argument
@@ -34,9 +35,11 @@ const drawScene = (gl, programInfo, buffers, deltaTime) => {
   mat4.translate(
     modelViewMatrix, // destination matrix
     modelViewMatrix, // matrix to translate
-    [-0.0, 0.0, -6.0]
+    [-0.0, 0.0, -5000.0]
+    // [-0.0, 0.0, -6.0]
   ) // amount to translate
 
+  // TODO remove
   cubeRotation += deltaTime
   mat4.rotate(modelViewMatrix, modelViewMatrix, cubeRotation * 0.7, [0, 1, 0])
   mat4.rotate(modelViewMatrix, modelViewMatrix, cubeRotation * 0.7, [0, 0, 1])
@@ -78,7 +81,7 @@ const drawScene = (gl, programInfo, buffers, deltaTime) => {
   gl.uniformMatrix4fv(programInfo.uniformLocations.modelViewMatrix, false, modelViewMatrix)
 
   {
-    const vertexCount = 36
+    const vertexCount = vCount
     const type = gl.UNSIGNED_SHORT
     const offset = 0
     gl.drawElements(gl.TRIANGLES, vertexCount, type, offset)
