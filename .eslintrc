@@ -7,6 +7,7 @@
   "plugins": ["prettier"],
   "parser": "babel-eslint",
   "rules": {
+    "no-bitwise": 0,
     "comma-dangle": ["error", "never"],
     "complexity": ["error", { "max": 10 }],
     "function-paren-newline": "off",
@@ -20,7 +21,7 @@
     "jsx-a11y/label-has-associated-control": "warn",
     "jsx-a11y/media-has-caption": "off",
     "lines-between-class-members": "off",
-    "max-params": ["warn", 2],
+    "max-params": 0,
     "no-debugger": "warn",
     "no-else-return": "off",
     "no-extra-semi": "error",
@@ -37,13 +38,7 @@
     "react/sort-comp": [
       "error",
       {
-        "order": [
-          "static-methods",
-          "instance-variables",
-          "lifecycle",
-          "everything-else",
-          "render"
-        ]
+        "order": ["static-methods", "instance-variables", "lifecycle", "everything-else", "render"]
       }
     ],
     "react/style-prop-object": "off",
