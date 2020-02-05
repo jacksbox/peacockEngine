@@ -25,7 +25,7 @@ const main = async () => {
     }
   }
 
-  const objData = await load('/resources/Test_2.obj')
+  const objData = await load('/resources/Peacock_2.obj')
   const buffer = initBuffer(gl, objData)
 
   loop(gl, programInfo, buffer)

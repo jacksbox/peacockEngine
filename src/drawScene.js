@@ -42,7 +42,6 @@ const drawScene = (gl, programInfo, buffers, deltaTime = 0) => {
   // TODO remove
   cubeRotation += deltaTime
   mat4.rotate(modelViewMatrix, modelViewMatrix, cubeRotation * 0.7, [0, 1, 0])
-  // mat4.rotate(modelViewMatrix, modelViewMatrix, cubeRotation * 0.7, [0, 0, 1])
 
   // Tell WebGL how to pull out the positions from the position
   // buffer into the vertexPosition attribute.
