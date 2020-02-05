@@ -26,7 +26,7 @@ const main = async () => {
     }
   }
 
-  const objectData = await loadObjectFile('/resources/Peacock.obj')
+  const objectData = await loadObjectFile('/resources/Test_2.obj')
   const buffer = initBuffer(gl, objectData)
   // drawScene(gl, programInfo, buffer, objectData.vCount)
   loop(gl, programInfo, buffer, objectData.vCount)
