@@ -6,6 +6,9 @@
   "extends": ["airbnb", "prettier"],
   "plugins": ["prettier"],
   "parser": "babel-eslint",
+  "globals": {
+    "mat4": "readonly"
+  },
   "rules": {
     "no-bitwise": 0,
     "comma-dangle": ["error", "never"],
