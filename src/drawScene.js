@@ -1,6 +1,6 @@
 let cubeRotation = 0.0
 
-const drawScene = (gl, programInfo, buffers, vCount, deltaTime = 0) => {
+const drawScene = (gl, programInfo, buffers, deltaTime = 0) => {
   gl.clearColor(0.0, 0.0, 0.0, 1.0) // Clear to black, fully opaque
   gl.clearDepth(1.0) // Clear everything
   gl.enable(gl.DEPTH_TEST) // Enable depth testing
@@ -71,7 +71,7 @@ const drawScene = (gl, programInfo, buffers, vCount, deltaTime = 0) => {
   }
 
   // Tell WebGL which indices to use to index the vertices
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.indices)
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.index)
 
   // Tell WebGL to use our program when drawing
   gl.useProgram(programInfo.program)
@@ -81,10 +81,9 @@ const drawScene = (gl, programInfo, buffers, vCount, deltaTime = 0) => {
   gl.uniformMatrix4fv(programInfo.uniformLocations.modelViewMatrix, false, modelViewMatrix)
 
   {
-    const vertexCount = vCount
     const type = gl.UNSIGNED_SHORT
     const offset = 0
-    gl.drawElements(gl.TRIANGLES, vertexCount, type, offset)
+    gl.drawElements(gl.TRIANGLES, buffers.vertexCount, type, offset)
   }
 }
 

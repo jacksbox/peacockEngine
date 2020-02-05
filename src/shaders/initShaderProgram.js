@@ -1,5 +1,5 @@
-import vertexShaderSource from './shaders/vertexShaderSource'
-import fragmentShaderSource from './shaders/fragmentShaderSource'
+import vertexShaderSource from './vertexShaderSource'
+import fragmentShaderSource from './fragmentShaderSource'
 
 //
 // creates a shader of the given type, uploads the source and

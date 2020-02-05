@@ -1,8 +1,7 @@
-import initShaderProgram from './initShaderProgram'
+import initShaderProgram from './shaders/initShaderProgram'
+import load from './objLoader/load'
 import initBuffer from './initBuffer'
-import loadObjectFile from './loadObjectFile'
 import loop from './loop'
-import drawScene from './drawScene'
 
 const main = async () => {
   const canvas = document.getElementById('canvas')
@@ -26,10 +25,10 @@ const main = async () => {
     }
   }
 
-  const objectData = await loadObjectFile('/resources/Test_2.obj')
-  const buffer = initBuffer(gl, objectData)
-  // drawScene(gl, programInfo, buffer, objectData.vCount)
-  loop(gl, programInfo, buffer, objectData.vCount)
+  const objData = await load('/resources/Test_2.obj')
+  const buffer = initBuffer(gl, objData)
+
+  loop(gl, programInfo, buffer)
 }
 
 window.onload = main

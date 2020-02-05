@@ -9,12 +9,13 @@ const initBuffers = (gl, objectData) => {
 
   const indexBuffer = gl.createBuffer()
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer)
-  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(objectData.indices), gl.STATIC_DRAW)
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(objectData.faces), gl.STATIC_DRAW)
 
   return {
     position: positionBuffer,
     color: colorBuffer,
-    indices: indexBuffer
+    index: indexBuffer,
+    vertexCount: objectData.vertexCount
   }
 }
 
