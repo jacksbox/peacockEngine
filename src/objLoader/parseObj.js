@@ -1,9 +1,9 @@
 const REGEX_POSITIONS = /^v\s+([\d\.\+\-eE]+)\s+([\d\.\+\-eE]+)\s+([\d\.\+\-eE]+)/
 const REGEX_TEXTURES = /^vt\s+([\d\.\+\-eE]+)\s+([\d\.\+\-eE]+)/
-const REGEX_FACES = /^f\s+(\d+)(?:\/\d*){0,2}\s+(\d+)(?:\/\d*){0,2}\s+(\d+)(?:\/\d*){0,2}/
+const REGEX_FACES = /^f\s+(\d+)\/(\d+)(?:\/\d*){0,1}\s+(\d+)\/(\d+)(?:\/\d*){0,1}\s+(\d+)\/(\d+)(?:\/\d*){0,1}/
 const REGEX_USEMTL = /^usemtl\s+(.*)/
 
-// const DEFAULT_COLOR = [0.6, 0.6, 0.6, 1.0]
+const DEFAULT_COLOR = [0.6, 0.6, 0.6, 1.0]
 
 const parseVectors = matches =>
   // prettier-ignore
@@ -24,20 +24,37 @@ const parseFaces = matches =>
   // prettier-ignore
   [
     parseInt(matches[1], 10) - 1,
-    parseInt(matches[2], 10) - 1,
-    parseInt(matches[3], 10) - 1
+    parseInt(matches[3], 10) - 1,
+    parseInt(matches[5], 10) - 1
   ]
 
-// const getRandomColor = () =>
-//   // prettier-ignore
-//   [
-//     Math.random().toFixed(2),
-//     Math.random().toFixed(2),
-//     Math.random().toFixed(2),
-//     1.0
-//   ]
+const parseFacesTextureMaterials = (matches, m) =>
+  // prettier-ignore
+  [
+    parseInt(matches[2], 10) - 1,
+    parseInt(matches[4], 10) - 1,
+    parseInt(matches[6], 10) - 1,
+    m
+  ]
 
-// const setColor = color => [...(color || getRandomColor())]
+const parseFacesMaterials = matches =>
+  // prettier-ignore
+  [
+    parseInt(matches[2], 10) - 1,
+    parseInt(matches[4], 10) - 1,
+    parseInt(matches[6], 10) - 1
+  ]
+
+const getRandomColor = () =>
+  // prettier-ignore
+  [
+    Math.random().toFixed(2),
+    Math.random().toFixed(2),
+    Math.random().toFixed(2),
+    1.0
+  ]
+
+const setColor = color => [...(color || getRandomColor())]
 
 const setMaterial = material => [material, material, material]
 
@@ -46,12 +63,13 @@ const parseObj = (text, mtlData = null) => {
 
   const positions = []
   const textureCoordinates = []
-  // const colors = []
+  const colors = []
   const faces = []
+  const facesTextures = []
+  const facesMaterials = []
   const materialTypes = []
-  const materials = []
 
-  // let currentColor = DEFAULT_COLOR
+  let currentColor = DEFAULT_COLOR
   let currentMaterial = 0
   let matches
   lines.forEach(line => {
@@ -60,7 +78,7 @@ const parseObj = (text, mtlData = null) => {
       if (material) {
         const i = materialTypes.indexOf(material)
         if (i > -1) {
-          currentMaterial = 1
+          currentMaterial = i
         } else {
           materialTypes.push(material)
           currentMaterial = materialTypes.length - 1
@@ -79,35 +97,40 @@ const parseObj = (text, mtlData = null) => {
     }
     matches = REGEX_TEXTURES.exec(line)
     if (matches) {
-      textureCoordinates.push(...parseTextureCoordinates(matches))
+      textureCoordinates.push(parseTextureCoordinates(matches))
       return
     }
     matches = REGEX_FACES.exec(line)
     if (matches) {
       faces.push(...parseFaces(matches))
-      materials.push(...setMaterial(currentMaterial))
-      // colors.push(...setColor(currentColor))
+      // facesTextures.push(...parseFacesTextureMaterials(matches, currentMaterial))
+      facesTextures.push(...parseFacesMaterials(matches))
+      facesMaterials.push(...setMaterial(currentMaterial))
+      colors.push(...setColor(currentColor))
     }
   })
 
   const vertexCount = faces.length
 
-  console.log({
-    positions,
-    // colors,
-    faces,
-    materials,
-    materialTypes,
-    vertexCount
+  // console.log(colors.length / 4)
+  // console.log(facesTextures.length / 4)
+
+  const coords = []
+  facesTextures.forEach(index => {
+    coords.push(...textureCoordinates[index], facesMaterials[index])
   })
 
   return {
     positions,
-    // colors,
+    colors,
     faces,
-    materials,
+    // facesTextures,
+    facesMaterials,
+    coords,
+    // textureCoordinates,
     materialTypes,
-    vertexCount
+    vertexCount,
+    mtlData
   }
 }
 

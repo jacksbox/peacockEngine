@@ -1,4 +1,5 @@
 const REGEX_NEWMTL = /^newmtl\s+(.*)/
+const REGEX_MAPKD = /^map_Kd\s+(.*)/
 const REGEX_COLORS = /^(Ka|Kd|Ks)\s+([0-9]*\.?[0-9]+)\s+([0-9]*\.?[0-9]+)\s+([0-9]*\.?[0-9]+)/
 
 const parseMtl = text => {
@@ -11,6 +12,7 @@ const parseMtl = text => {
   let r
   let g
   let b
+  let file
   lines.forEach(line => {
     ;[, name] = REGEX_NEWMTL.exec(line) || [null, null]
     if (name) {
@@ -27,6 +29,10 @@ const parseMtl = text => {
           parseFloat(g),
           parseFloat(b)
         ]
+    }
+    ;[, file] = REGEX_MAPKD.exec(line) || [null, null]
+    if (file) {
+      materials[currentMaterial].file = file
     }
   })
 
