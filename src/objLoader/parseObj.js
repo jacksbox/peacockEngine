@@ -1,5 +1,6 @@
 const REGEX_POSITIONS = /^v\s+([\d\.\+\-eE]+)\s+([\d\.\+\-eE]+)\s+([\d\.\+\-eE]+)/
 const REGEX_FACES = /^f\s+(\d+)(?:\/\d*){0,2}\s+(\d+)(?:\/\d*){0,2}\s+(\d+)(?:\/\d*){0,2}/
+const REGEX_USEMTL = /^usemtl\s+(.*)/
 
 const DEFAULT_COLOR = [0.6, 0.6, 0.6, 1.0]
 
@@ -30,15 +31,23 @@ const getRandomColor = () =>
 
 const setColor = color => [...(color || getRandomColor())]
 
-const parseObj = text => {
+const parseObj = (text, mtlData = null) => {
   const lines = text.split('\n')
 
   const positions = []
   const colors = []
   const faces = []
 
+  let currentColor = DEFAULT_COLOR
   let matches
   lines.forEach(line => {
+    if (mtlData) {
+      const [, material] = REGEX_USEMTL.exec(line) || [null, null]
+      if (material && mtlData[material]) {
+        currentColor = [...mtlData[material].Kd, 1.0] || DEFAULT_COLOR
+        return
+      }
+    }
     matches = REGEX_POSITIONS.exec(line)
     if (matches) {
       positions.push(...parseVectors(matches))
@@ -47,7 +56,7 @@ const parseObj = text => {
     matches = REGEX_FACES.exec(line)
     if (matches) {
       faces.push(...parseFaces(matches))
-      colors.push(...setColor(DEFAULT_COLOR))
+      colors.push(...setColor(currentColor))
     }
   })
 

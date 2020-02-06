@@ -20,7 +20,13 @@ const parseMtl = text => {
     }
     ;[, type, r, g, b] = REGEX_COLORS.exec(line) || [null, null, null, null]
     if (type) {
-      materials[currentMaterial][type] = [r, g, b]
+      materials[currentMaterial][type] =
+        // prettier-ignore
+        [
+          parseFloat(r),
+          parseFloat(g),
+          parseFloat(b)
+        ]
     }
   })
 
