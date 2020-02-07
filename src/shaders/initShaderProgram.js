@@ -27,16 +27,12 @@ const loadShader = (gl, type, source) => {
 //
 // Initialize a shader program, so WebGL knows how to draw our data
 //
-const initShaderProgram = (gl, objData) => {
+const initShaderProgram = (gl, uniforms) => {
   const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vertexShaderSource)
 
-  const mats = Object.keys(objData.mtlData)
-    .map((key, i) => (objData.mtlData[key].file ? `uniform sampler2D u_image_${i};` : ''))
-    .join('\n')
+  const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource(uniforms))
 
-  const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource(mats))
-
-  console.log(fragmentShaderSource(mats))
+  console.log(fragmentShaderSource(uniforms))
 
   // Create the shader program
   const shaderProgram = gl.createProgram()

@@ -30,7 +30,7 @@ const loadImage = (file, callback) => {
   const image = new Image()
   image.src = 'resources/' + file.url
   image.onload = callback
-  return [file.name, image]
+  return { name: file.name, src: image, index: file.i }
 }
 
 const loadImages = (files, callback) => {
@@ -50,49 +50,29 @@ const loadImages = (files, callback) => {
 }
 
 const startEngine = (gl, objData) => images => {
-  const shaderProgram = initShaderProgram(gl, objData)
+  const uniforms = images.map((image, i) => {
+    const texture = gl.createTexture()
+    gl.bindTexture(gl.TEXTURE_2D, texture)
 
-  // const uniforms = images.map((image, i) => {
-  //   const texture = gl.createTexture()
-  //   gl.bindTexture(gl.TEXTURE_2D, texture)
-
-  //   // Set the parameters so we can render any size image.
-  //   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
-  //   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
-  //   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
-  //   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
-
-  //   // Upload the image into the texture.
-  //   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image[1])
-  //   const name = `u_image_2`
-  //   const loc = gl.getUniformLocation(shaderProgram, name)
-  //   gl.uniform1i(loc, i)
-
-  //   gl.activeTexture(gl[`TEXTURE${i}`])
-  //   gl.bindTexture(gl.TEXTURE_2D, texture)
-  //   // add the texture to the array of textures.
-  //   return name
-  // })
-  function powerOfTwo(x) {
-    return Math.log2(x) % 1 === 0
-  }
-  const texture = gl.createTexture()
-  gl.bindTexture(gl.TEXTURE_2D, texture)
-
-  if (powerOfTwo(images[0][1].width) && powerOfTwo(images[0][1].height)) {
-    // Yes, it's a power of 2. Generate mips.
-    gl.generateMipmap(gl.TEXTURE_2D)
-  } else {
-    // No, it's not a power of 2. Turn off mips and set
-    // wrapping to clamp to edge
+    // Set the parameters so we can render any size image.
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-  }
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
 
-  // Upload the image into the texture.
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, images[0][1])
-  // const loc = gl.getUniformLocation(shaderProgram, `u_image_2`)
+    // Upload the image into the texture.
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image.src)
+    const name = `u_image_${i}`
+    // const loc = gl.getUniformLocation(shaderProgram, name)
+    // gl.uniform1i(loc, image.index)
+
+    gl.activeTexture(gl[`TEXTURE${i}`])
+    gl.bindTexture(gl.TEXTURE_2D, texture)
+    // add the texture to the array of textures.
+    return { name, loc: i, index: image.index, w: image.src.width, h: image.src.height }
+  })
+
+  const shaderProgram = initShaderProgram(gl, uniforms)
 
   const programInfo = {
     program: shaderProgram,
@@ -104,20 +84,23 @@ const startEngine = (gl, objData) => images => {
     uniformLocations: {
       projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
       modelViewMatrix: gl.getUniformLocation(shaderProgram, 'uModelViewMatrix'),
-      u_image_2: gl.getUniformLocation(shaderProgram, 'u_image_2')
+      u_image_0: gl.getUniformLocation(shaderProgram, 'u_image_0'),
+      u_image_1: gl.getUniformLocation(shaderProgram, 'u_image_1'),
+      u_image_2: gl.getUniformLocation(shaderProgram, 'u_image_2'),
+      u_image_3: gl.getUniformLocation(shaderProgram, 'u_image_3'),
+      u_image_4: gl.getUniformLocation(shaderProgram, 'u_image_4'),
+      u_image_5: gl.getUniformLocation(shaderProgram, 'u_image_5')
     }
   }
-  // uniforms.forEach(name => {
-  //   programInfo.uniformLocations[name] = gl.getUniformLocation(shaderProgram, name)
-  // })
-
-  gl.activeTexture(gl.TEXTURE0)
-  gl.bindTexture(gl.TEXTURE_2D, texture)
-  gl.uniform1i(programInfo.uniformLocations.u_image_2, 0)
+  uniforms.forEach(({ name }) => {
+    programInfo.uniformLocations[name] = gl.getUniformLocation(shaderProgram, name)
+  })
 
   console.log(programInfo)
 
   const buffer = initBuffer(gl, objData)
+
+  settings.uniforms = uniforms
 
   loop(gl, programInfo, buffer, settings)
 }
@@ -135,9 +118,9 @@ const main = async () => {
 
   console.log('obj parsed', objData)
 
-  const files = Object.keys(objData.mtlData).reduce((acc, name) => {
+  const files = Object.keys(objData.mtlData).reduce((acc, name, i) => {
     if (objData.mtlData[name].file) {
-      acc.push({ url: objData.mtlData[name].file, name })
+      acc.push({ url: objData.mtlData[name].file, name, i })
     }
     return acc
   }, [])

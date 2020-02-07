@@ -93,6 +93,7 @@ const parseObj = (text, mtlData = null) => {
     matches = REGEX_POSITIONS.exec(line)
     if (matches) {
       positions.push(...parseVectors(matches))
+      facesMaterials.push(...setMaterial(currentMaterial))
       return
     }
     matches = REGEX_TEXTURES.exec(line)
@@ -105,16 +106,13 @@ const parseObj = (text, mtlData = null) => {
       faces.push(...parseFaces(matches))
       // facesTextures.push(...parseFacesTextureMaterials(matches, currentMaterial))
       facesTextures.push(...parseFacesMaterials(matches))
-      facesMaterials.push(...setMaterial(currentMaterial))
       colors.push(...setColor(currentColor))
     }
   })
 
   const vertexCount = faces.length
 
-  // console.log(colors.length / 4)
-  // console.log(facesTextures.length / 4)
-
+  // something is wrong here
   const coords = []
   facesTextures.forEach(index => {
     coords.push(...textureCoordinates[index], facesMaterials[index])

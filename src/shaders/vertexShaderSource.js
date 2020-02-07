@@ -7,7 +7,7 @@ uniform mat4 uModelViewMatrix;
 uniform mat4 uProjectionMatrix;
 
 varying lowp vec4 vColor;
-varying lowp vec3 vMaterial;
+varying highp vec3 vMaterial;
 
 void main() {
   gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;

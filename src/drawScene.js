@@ -72,7 +72,10 @@ const drawScene = (gl, programInfo, buffers, settings, deltaTime = 0) => {
   // Set the shader uniforms
   gl.uniformMatrix4fv(programInfo.uniformLocations.projectionMatrix, false, projectionMatrix)
   gl.uniformMatrix4fv(programInfo.uniformLocations.modelViewMatrix, false, modelViewMatrix)
-  gl.uniform1i(programInfo.uniformLocations.u_image_2, 0)
+
+  settings.uniforms.forEach(({ name, loc }) => {
+    gl.uniform1i(programInfo.uniformLocations[name], loc)
+  })
 
   {
     const type = gl.UNSIGNED_SHORT
