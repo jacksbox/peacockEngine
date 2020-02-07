@@ -78,8 +78,8 @@ const startEngine = (gl, objData) => images => {
     program: shaderProgram,
     attribLocations: {
       vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
-      vertextMaterial: gl.getAttribLocation(shaderProgram, 'aVertextMaterial'),
-      vertexColor: gl.getAttribLocation(shaderProgram, 'aVertexColor')
+      vertextMaterial: gl.getAttribLocation(shaderProgram, 'aVertextMaterial')
+      // vertexColor: gl.getAttribLocation(shaderProgram, 'aVertexColor')
     },
     uniformLocations: {
       projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
