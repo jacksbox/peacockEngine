@@ -61,7 +61,9 @@ const drawScene = (gl, programInfo, buffers, settings, deltaTime = 0) => {
   gl.uniformMatrix4fv(programInfo.uniformLocations.projectionMatrix, false, projectionMatrix)
   gl.uniformMatrix4fv(programInfo.uniformLocations.modelViewMatrix, false, modelViewMatrix)
 
-  settings.uniforms.forEach(({ name, loc }) => {
+  settings.uniforms.forEach(({ name, loc, texture }) => {
+    gl.activeTexture(gl[`TEXTURE${loc}`])
+    gl.bindTexture(gl.TEXTURE_2D, texture)
     gl.uniform1i(programInfo.uniformLocations[name], loc)
   })
 

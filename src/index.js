@@ -10,6 +10,13 @@ const settingsDeer = {
   rotate: true
 }
 
+const settingsPeacock1 = {
+  objFile: 'Peacock_1.obj',
+  zFar: 10000,
+  translate: [-0.0, -2.0, -5.0],
+  rotate: false
+}
+
 const settingsPeacock2 = {
   objFile: 'Peacock_2.obj',
   zFar: 10000,
@@ -18,9 +25,9 @@ const settingsPeacock2 = {
 }
 
 const settingsPeacockWorld = {
-  objFile: 'Peacock_World.obj',
+  objFile: 'Peacock_World3.obj',
   zFar: 10000,
-  translate: [50.0, -60.0, -300.0],
+  translate: [50.0, -60.0, -200.0],
   rotate: false
 }
 
@@ -30,7 +37,7 @@ const loadImage = (file, callback) => {
   const image = new Image()
   image.src = 'resources/' + file.url
   image.onload = callback
-  return { name: file.name, src: image, index: file.i }
+  return { name: file.name, src: image, index: file.i, url: file.url }
 }
 
 const loadImages = (files, callback) => {
@@ -57,8 +64,8 @@ const startEngine = (gl, objData) => images => {
     // Set the parameters so we can render any size image.
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
-    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
 
     // Upload the image into the texture.
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image.src)
@@ -66,10 +73,8 @@ const startEngine = (gl, objData) => images => {
     // const loc = gl.getUniformLocation(shaderProgram, name)
     // gl.uniform1i(loc, image.index)
 
-    gl.activeTexture(gl[`TEXTURE${i}`])
-    gl.bindTexture(gl.TEXTURE_2D, texture)
     // add the texture to the array of textures.
-    return { name, loc: i, index: image.index, w: image.src.width, h: image.src.height }
+    return { name, loc: i, index: image.index, w: image.src.width, h: image.src.height, url: image.url, texture }
   })
 
   const shaderProgram = initShaderProgram(gl, uniforms)
@@ -96,6 +101,7 @@ const startEngine = (gl, objData) => images => {
     programInfo.uniformLocations[name] = gl.getUniformLocation(shaderProgram, name)
   })
 
+  console.log(uniforms)
   console.log(programInfo)
 
   const buffer = initBuffer(gl, objData)

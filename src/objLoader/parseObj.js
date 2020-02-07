@@ -19,20 +19,23 @@ const parseTextures = matches =>
     parseFloat(matches[2])
   ]
 
-const parseFaces = matches =>
+const parseFaces = (matches, currentMaterial) =>
   // prettier-ignore
   [{
     v: parseInt(matches[1], 10) - 1,
     vt: parseInt(matches[2], 10) - 1,
-    vn: parseInt(matches[3], 10) - 1
+    vn: parseInt(matches[3], 10) - 1,
+    m: currentMaterial
   },{
     v: parseInt(matches[4], 10) - 1,
     vt: parseInt(matches[5], 10) - 1,
-    vn: parseInt(matches[6], 10) - 1
+    vn: parseInt(matches[6], 10) - 1,
+    m: currentMaterial
   },{
     v: parseInt(matches[7], 10) - 1,
     vt: parseInt(matches[8], 10) - 1,
-    vn: parseInt(matches[9], 10) - 1
+    vn: parseInt(matches[9], 10) - 1,
+    m: currentMaterial
   }]
 
 const parseObj = (text, mtlData = null) => {
@@ -53,47 +56,49 @@ const parseObj = (text, mtlData = null) => {
 
   let currentMaterial = 0
   let matches
-  lines.forEach(line => {
-    if (mtlData) {
-      const [, material] = REGEX_USEMTL.exec(line) || [null, null]
-      if (material) {
-        const i = materialTypes.indexOf(material)
-        if (i > -1) {
-          currentMaterial = i
-        } else {
-          materialTypes.push(material)
-          currentMaterial = materialTypes.length - 1
+  try {
+    lines.forEach((line, n) => {
+      if (mtlData) {
+        const [, material] = REGEX_USEMTL.exec(line) || [null, null]
+        if (material) {
+          const i = materialTypes.indexOf(material)
+          if (i > -1) {
+            currentMaterial = i
+          } else {
+            materialTypes.push(material)
+            currentMaterial = materialTypes.length - 1
+          }
+          return
         }
+      }
+      matches = REGEX_POSITIONS.exec(line)
+      if (matches) {
+        positions.push(parseVectors(matches))
         return
       }
-    }
-    matches = REGEX_POSITIONS.exec(line)
-    if (matches) {
-      positions.push(parseVectors(matches))
-      materials.push(currentMaterial)
-      return
-    }
-    matches = REGEX_NORMALES.exec(line)
-    if (matches) {
-      normales.push(parseVectors(matches))
-      return
-    }
-    matches = REGEX_TEXTURES.exec(line)
-    if (matches) {
-      textures.push(parseTextures(matches))
-      return
-    }
-    matches = REGEX_FACES.exec(line)
-    if (matches) {
-      faces.push(...parseFaces(matches))
-    }
-  })
+      matches = REGEX_NORMALES.exec(line)
+      if (matches) {
+        normales.push(parseVectors(matches))
+        return
+      }
+      matches = REGEX_TEXTURES.exec(line)
+      if (matches) {
+        textures.push(parseTextures(matches))
+        // materials.push(currentMaterial)
+        return
+      }
+      matches = REGEX_FACES.exec(line)
+      if (matches) {
+        faces.push(...parseFaces(matches, currentMaterial))
+      }
+    })
+  } catch (err) {}
 
-  const getKey = ({ v, vt, vn }) => `${v}_${vt}_${vn}`
+  const getKey = ({ v, vt, vn, m }) => `${v}_${vt}_${vn}_${m}`
 
   let nextIndex = 0
   faces.forEach((face, i) => {
-    const { v, vt, vn } = face
+    const { v, vt, vn, m } = face
     const key = getKey(face)
     const index = keyToFaceMap[key]
     if (typeof index !== 'undefined') {
@@ -101,24 +106,11 @@ const parseObj = (text, mtlData = null) => {
     } else {
       facesMapped.push(nextIndex)
       keyToFaceMap[key] = nextIndex
-      nextIndex += 1
       positionsMapped.push(...positions[v])
-      texturesMapped.push(...textures[vt], materials[v])
+      texturesMapped.push(...textures[vt], m)
       normalesMapped.push(...normales[vn])
+      nextIndex += 1
     }
-    // if (i >= 9) {
-    //   console.log({
-    //     keyToFaceMap,
-    //     key,
-    //     index,
-    //     nextIndex,
-    //     facesMapped,
-    //     positionsMapped,
-    //     texturesMapped,
-    //     normalesMapped
-    //   })
-    //   throw new Error('stop')
-    // }
   })
 
   const indexCount = facesMapped.length
