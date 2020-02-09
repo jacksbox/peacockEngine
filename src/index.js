@@ -27,7 +27,7 @@ const settingsPeacock2 = {
 const settingsPeacockWorld = {
   objFile: 'Peacock_World4.obj',
   zFar: 800,
-  translate: [50.0, -60.0, -200.0],
+  translate: [0, -50.0, -200.0],
   rotate: false
 }
 
