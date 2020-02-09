@@ -14,7 +14,7 @@ void main() {
 
 
   if (vMaterial[2] == 0.0) {
-    color = vec4(vec3(1.0, 0, 1.0), 1.0);
+    color = vec4(vec3(0, 1.0, 0), 1.0);
   } else
   if (vMaterial[2] == 1.0) {
     color = vec4(vec3(0, 1.0, 1.0), 1.0);
