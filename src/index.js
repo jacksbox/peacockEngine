@@ -25,8 +25,8 @@ const settingsPeacock2 = {
 }
 
 const settingsPeacockWorld = {
-  objFile: 'Peacock_World3.obj',
-  zFar: 10000,
+  objFile: 'Peacock_World4.obj',
+  zFar: 800,
   translate: [50.0, -60.0, -200.0],
   rotate: false
 }
@@ -62,8 +62,15 @@ const startEngine = (gl, objData) => images => {
     gl.bindTexture(gl.TEXTURE_2D, texture)
 
     // Set the parameters so we can render any size image.
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+    console.log(image.name)
+    if (image.name === 'grass') {
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
+    } else {
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+    }
+
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
 
@@ -83,12 +90,13 @@ const startEngine = (gl, objData) => images => {
     program: shaderProgram,
     attribLocations: {
       vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
-      vertextMaterial: gl.getAttribLocation(shaderProgram, 'aVertextMaterial')
-      // vertexColor: gl.getAttribLocation(shaderProgram, 'aVertexColor')
+      vertextMaterial: gl.getAttribLocation(shaderProgram, 'aVertextMaterial'),
+      vertexNormal: gl.getAttribLocation(shaderProgram, 'aVertexNormal')
     },
     uniformLocations: {
       projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
       modelViewMatrix: gl.getUniformLocation(shaderProgram, 'uModelViewMatrix'),
+      normalMatrix: gl.getUniformLocation(shaderProgram, 'uNormalMatrix'),
       u_image_0: gl.getUniformLocation(shaderProgram, 'u_image_0'),
       u_image_1: gl.getUniformLocation(shaderProgram, 'u_image_1'),
       u_image_2: gl.getUniformLocation(shaderProgram, 'u_image_2'),
