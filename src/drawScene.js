@@ -1,6 +1,6 @@
 let cubeRotation = 0.0
 
-const drawScene = (gl, programInfo, buffers, settings, deltaTime = 0, rotationUnit = 0) => {
+const drawScene = ({ gl, programInfo, buffers, glTextureData, settings, deltaTime = 0, rotationUnit = 0 }) => {
   gl.clearColor(0.3, 0.7, 1.0, 1.0) // Clear to black, fully opaque
   gl.clearDepth(1.0) // Clear everything
   gl.enable(gl.DEPTH_TEST) // Enable depth testing
@@ -78,10 +78,10 @@ const drawScene = (gl, programInfo, buffers, settings, deltaTime = 0, rotationUn
   gl.uniformMatrix4fv(programInfo.uniformLocations.modelViewMatrix, false, modelViewMatrix)
   gl.uniformMatrix4fv(programInfo.uniformLocations.normalMatrix, false, normalMatrix)
 
-  settings.uniforms.forEach(({ name, loc, texture }) => {
-    gl.activeTexture(gl[`TEXTURE${loc}`])
-    gl.bindTexture(gl.TEXTURE_2D, texture)
-    gl.uniform1i(programInfo.uniformLocations[name], loc)
+  glTextureData.forEach(({ name, id, glTexture }) => {
+    gl.activeTexture(gl[`TEXTURE${id}`])
+    gl.bindTexture(gl.TEXTURE_2D, glTexture)
+    gl.uniform1i(programInfo.uniformLocations[name], id)
   })
 
   {

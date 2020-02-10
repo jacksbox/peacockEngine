@@ -1,7 +1,9 @@
 import initShaderProgram from './shaders/initShaderProgram'
 import objLoader from './objLoader'
 import textureLoader from './textureLoader'
+import bindTextures from './bindTextures'
 import initBuffer from './initBuffer'
+import drawScene from './drawScene'
 import loop from './loop'
 
 const settingsDeer = {
@@ -46,35 +48,13 @@ const settingsPeacockWorld = {
 
 const settings = settingsPeacockWorld
 
-const startEngine = ({ gl, objData, mtlData, textureData }) => {
-  const uniforms = textureData.map((image, i) => {
-    const texture = gl.createTexture()
-    gl.bindTexture(gl.TEXTURE_2D, texture)
+const start = ({ gl, objData, textureData }) => {
+  const glTextureData = bindTextures(gl, textureData)
 
-    // Set the parameters so we can render any size image.
-    console.log(image.name)
-    if (image.name === 'grass') {
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
-    } else {
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
-    }
+  // TEXTURES LOADED
+  console.log({ glTextureData })
 
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
-
-    // Upload the image into the texture.
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image.src)
-    const name = `u_image_${i}`
-    // const loc = gl.getUniformLocation(shaderProgram, name)
-    // gl.uniform1i(loc, image.index)
-
-    // add the texture to the array of textures.
-    return { name, loc: i, index: image.index, w: image.src.width, h: image.src.height, url: image.url, texture }
-  })
-
-  const shaderProgram = initShaderProgram(gl, uniforms)
+  const shaderProgram = initShaderProgram(gl, glTextureData)
 
   const programInfo = {
     program: shaderProgram,
@@ -86,27 +66,30 @@ const startEngine = ({ gl, objData, mtlData, textureData }) => {
     uniformLocations: {
       projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
       modelViewMatrix: gl.getUniformLocation(shaderProgram, 'uModelViewMatrix'),
-      normalMatrix: gl.getUniformLocation(shaderProgram, 'uNormalMatrix'),
-      u_image_0: gl.getUniformLocation(shaderProgram, 'u_image_0'),
-      u_image_1: gl.getUniformLocation(shaderProgram, 'u_image_1'),
-      u_image_2: gl.getUniformLocation(shaderProgram, 'u_image_2'),
-      u_image_3: gl.getUniformLocation(shaderProgram, 'u_image_3'),
-      u_image_4: gl.getUniformLocation(shaderProgram, 'u_image_4'),
-      u_image_5: gl.getUniformLocation(shaderProgram, 'u_image_5')
+      normalMatrix: gl.getUniformLocation(shaderProgram, 'uNormalMatrix')
     }
   }
-  uniforms.forEach(({ name }) => {
-    programInfo.uniformLocations[name] = gl.getUniformLocation(shaderProgram, name)
+
+  glTextureData.forEach(texture => {
+    programInfo.uniformLocations[texture.name] = gl.getUniformLocation(shaderProgram, texture.name)
   })
 
-  console.log(uniforms)
-  console.log(programInfo)
+  // PROGRAM INFO DONE
+  console.log({ programInfo })
 
-  const buffer = initBuffer(gl, objData)
+  const buffers = initBuffer(gl, objData)
 
-  settings.uniforms = uniforms
+  const draw = state =>
+    drawScene({
+      gl,
+      programInfo,
+      buffers,
+      glTextureData,
+      settings,
+      ...state
+    })
 
-  loop(gl, programInfo, buffer, settings)
+  loop(draw)
 }
 
 const initGl = canvasElementId => {
@@ -129,14 +112,16 @@ const main = async () => {
 
   const { objData, mtlData } = await objLoader({ ...settings.file })
 
+  // OBJ & MTL PARSED
   console.log({ objData })
   console.log({ mtlData })
 
   const textureData = await textureLoader({ mtlData, basePath: settings.file.basePath })
 
+  // TEXTURE FILES LOADED
   console.log({ textureData })
 
-  startEngine({ gl, objData, mtlData, textureData })
+  start({ gl, objData, textureData })
 }
 
 window.onload = main

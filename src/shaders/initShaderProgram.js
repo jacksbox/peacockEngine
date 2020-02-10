@@ -27,12 +27,10 @@ const loadShader = (gl, type, source) => {
 //
 // Initialize a shader program, so WebGL knows how to draw our data
 //
-const initShaderProgram = (gl, uniforms) => {
+const initShaderProgram = (gl, glTextureData) => {
   const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vertexShaderSource)
 
-  const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource(uniforms))
-
-  console.log(fragmentShaderSource(uniforms))
+  const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource(glTextureData))
 
   // Create the shader program
   const shaderProgram = gl.createProgram()
@@ -42,7 +40,7 @@ const initShaderProgram = (gl, uniforms) => {
 
   // If creating the shader program failed, alert
   if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-    alert('Unable to initialize the shader program: ' + gl.getProgramInfoLog(shaderProgram))
+    console.error(`Unable to initialize the shader program: ${gl.getProgramInfoLog(shaderProgram)}`)
     return null
   }
 

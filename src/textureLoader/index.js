@@ -1,14 +1,16 @@
-import loadImages from './loadImages'
+import loadImage from './loadImage'
 
 const textureLoader = async ({ mtlData, basePath }) => {
-  const files = Object.keys(mtlData).reduce((acc, name, i) => {
-    if (mtlData[name].map_Kd) {
-      acc.push({ url: mtlData[name].map_Kd, name, i })
+  const promises = Object.keys(mtlData).map(async name => {
+    const file = mtlData[name].map_Kd
+    const texture = { name, ...mtlData[name] }
+    if (!file) {
+      return new Promise(resolve => resolve(texture))
     }
-    return acc
-  }, [])
+    return loadImage({ texture, basePath })
+  })
 
-  const textureData = await loadImages({ files, basePath })
+  const textureData = await Promise.all(promises)
 
   return textureData
 }
