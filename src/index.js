@@ -133,8 +133,8 @@ const main = async () => {
   console.log('obj parsed', objData)
 
   const files = Object.keys(objData.mtlData).reduce((acc, name, i) => {
-    if (objData.mtlData[name].file) {
-      acc.push({ url: objData.mtlData[name].file, name, i })
+    if (objData.mtlData[name].map_Kd) {
+      acc.push({ url: objData.mtlData[name].map_Kd, name, i })
     }
     return acc
   }, [])
