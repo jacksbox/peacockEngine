@@ -1,9 +1,11 @@
 import initShaderProgram from './shaders/initShaderProgram'
-import load from './objLoader/load'
+import objLoader from './objLoader'
+import textureLoader from './textureLoader'
 import initBuffer from './initBuffer'
 import loop from './loop'
 
 const settingsDeer = {
+  objPath: 'resources',
   objFile: 'deer.obj',
   zFar: 10000,
   translate: [-0.0, -500.0, -5000.0],
@@ -11,6 +13,7 @@ const settingsDeer = {
 }
 
 const settingsPeacock1 = {
+  objPath: 'resources',
   objFile: 'Peacock_1.obj',
   zFar: 10000,
   translate: [-0.0, -2.0, -5.0],
@@ -18,6 +21,7 @@ const settingsPeacock1 = {
 }
 
 const settingsPeacock2 = {
+  objPath: 'resources',
   objFile: 'Peacock_2.obj',
   zFar: 10000,
   translate: [-0.0, -2.0, -10.0],
@@ -25,6 +29,7 @@ const settingsPeacock2 = {
 }
 
 const settingsPeacockWorld = {
+  objPath: 'resources',
   objFile: 'Peacock_World4.obj',
   zFar: 800,
   translate: [0, -50.0, -200.0],
@@ -33,31 +38,8 @@ const settingsPeacockWorld = {
 
 const settings = settingsPeacockWorld
 
-const loadImage = (file, callback) => {
-  const image = new Image()
-  image.src = 'resources/' + file.url
-  image.onload = callback
-  return { name: file.name, src: image, index: file.i, url: file.url }
-}
-
-const loadImages = (files, callback) => {
-  let images = []
-  let imagesToLoad = files.length
-
-  // Called each time an image finished loading.
-  const onImageLoad = () => {
-    imagesToLoad -= 1
-    // If all the images are loaded call the callback.
-    if (imagesToLoad === 0) {
-      callback(images)
-    }
-  }
-
-  images = files.map(file => loadImage(file, onImageLoad))
-}
-
-const startEngine = (gl, objData) => images => {
-  const uniforms = images.map((image, i) => {
+const startEngine = (gl, objData, textureData) => {
+  const uniforms = textureData.map((image, i) => {
     const texture = gl.createTexture()
     gl.bindTexture(gl.TEXTURE_2D, texture)
 
@@ -128,20 +110,15 @@ const main = async () => {
     return
   }
 
-  const objData = await load('resources', settings.objFile)
+  const objData = await objLoader(settings.objPath, settings.objFile)
 
   console.log('obj parsed', objData)
 
-  const files = Object.keys(objData.mtlData).reduce((acc, name, i) => {
-    if (objData.mtlData[name].map_Kd) {
-      acc.push({ url: objData.mtlData[name].map_Kd, name, i })
-    }
-    return acc
-  }, [])
+  const textureData = await textureLoader(objData.mtlData, settings)
 
-  console.log('files loaded', files)
+  console.log({ textureData })
 
-  loadImages(files, startEngine(gl, objData))
+  startEngine(gl, objData, textureData)
 }
 
 window.onload = main

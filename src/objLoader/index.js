@@ -4,7 +4,7 @@ import parseMtl from './parseMtl'
 
 const REGEX_MTL = /^mtllib\s+(.*)$/m
 
-const load = async (path, url) => {
+const objLoader = async (path, url) => {
   const objFile = await loadFile(`${path}/${url}`)
 
   let mtlData = null
@@ -21,4 +21,4 @@ const load = async (path, url) => {
   return objData
 }
 
-export default load
+export default objLoader
