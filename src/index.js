@@ -46,7 +46,8 @@ const settingsPeacockWorld = {
   rotate: false
 }
 
-const settings = settingsPeacockWorld
+// const settings = settingsPeacockWorld
+const settings = settingsDeer
 
 const start = ({ gl, objData, textureData }) => {
   const glTextureData = bindTextures(gl, textureData)
