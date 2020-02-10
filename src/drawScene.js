@@ -81,11 +81,13 @@ const drawScene = ({ gl, programInfo, buffers, glTextureData, settings, state })
   gl.uniformMatrix4fv(programInfo.uniformLocations.modelViewMatrix, false, modelViewMatrix)
   gl.uniformMatrix4fv(programInfo.uniformLocations.normalMatrix, false, normalMatrix)
 
-  glTextureData.forEach(({ name, id, glTexture }) => {
-    gl.activeTexture(gl[`TEXTURE${id}`])
-    gl.bindTexture(gl.TEXTURE_2D, glTexture)
-    gl.uniform1i(programInfo.uniformLocations[name], id)
-  })
+  if (glTextureData) {
+    glTextureData.forEach(({ name, id, glTexture }) => {
+      gl.activeTexture(gl[`TEXTURE${id}`])
+      gl.bindTexture(gl.TEXTURE_2D, glTexture)
+      gl.uniform1i(programInfo.uniformLocations[name], id)
+    })
+  }
 
   {
     const type = gl.UNSIGNED_SHORT

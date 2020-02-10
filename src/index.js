@@ -50,7 +50,7 @@ const settingsPeacockWorld = {
 const settings = settingsDeer
 
 const start = ({ gl, objData, textureData }) => {
-  const glTextureData = bindTextures(gl, textureData)
+  const glTextureData = textureData ? bindTextures(gl, textureData) : null
 
   // TEXTURES LOADED
   console.log({ glTextureData })
@@ -71,9 +71,11 @@ const start = ({ gl, objData, textureData }) => {
     }
   }
 
-  glTextureData.forEach(texture => {
-    programInfo.uniformLocations[texture.name] = gl.getUniformLocation(shaderProgram, texture.name)
-  })
+  if (glTextureData) {
+    glTextureData.forEach(texture => {
+      programInfo.uniformLocations[texture.name] = gl.getUniformLocation(shaderProgram, texture.name)
+    })
+  }
 
   // PROGRAM INFO DONE
   console.log({ programInfo })
@@ -117,7 +119,7 @@ const main = async () => {
   console.log({ objData })
   console.log({ mtlData })
 
-  const textureData = await textureLoader({ mtlData, basePath: settings.file.basePath })
+  const textureData = mtlData ? await textureLoader({ mtlData, basePath: settings.file.basePath }) : null
 
   // TEXTURE FILES LOADED
   console.log({ textureData })
