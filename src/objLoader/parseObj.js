@@ -95,17 +95,14 @@ const parseObj = (text, mtlData = null) => {
     }
   })
 
-  const computed = rebuildIndex({
+  const computedObjData = rebuildIndex({
     faces: facesWithMaterial,
     positions,
     textures,
     normals
   })
 
-  return {
-    ...computed,
-    mtlData
-  }
+  return computedObjData
 }
 
 export default parseObj

@@ -5,32 +5,40 @@ import initBuffer from './initBuffer'
 import loop from './loop'
 
 const settingsDeer = {
-  objPath: 'resources',
-  objFile: 'deer.obj',
+  file: {
+    basePath: 'resources',
+    filename: 'deer.obj'
+  },
   zFar: 10000,
   translate: [-0.0, -500.0, -5000.0],
   rotate: true
 }
 
 const settingsPeacock1 = {
-  objPath: 'resources',
-  objFile: 'Peacock_1.obj',
+  file: {
+    basePath: 'resources',
+    filename: 'Peacock_1.obj'
+  },
   zFar: 10000,
   translate: [-0.0, -2.0, -5.0],
   rotate: false
 }
 
 const settingsPeacock2 = {
-  objPath: 'resources',
-  objFile: 'Peacock_2.obj',
+  file: {
+    basePath: 'resources',
+    filename: 'Peacock_2.obj'
+  },
   zFar: 10000,
   translate: [-0.0, -2.0, -10.0],
   rotate: true
 }
 
 const settingsPeacockWorld = {
-  objPath: 'resources',
-  objFile: 'Peacock_World4.obj',
+  file: {
+    basePath: 'resources',
+    filename: 'Peacock_World4.obj'
+  },
   zFar: 800,
   translate: [0, -50.0, -200.0],
   rotate: false
@@ -38,7 +46,7 @@ const settingsPeacockWorld = {
 
 const settings = settingsPeacockWorld
 
-const startEngine = (gl, objData, textureData) => {
+const startEngine = ({ gl, objData, mtlData, textureData }) => {
   const uniforms = textureData.map((image, i) => {
     const texture = gl.createTexture()
     gl.bindTexture(gl.TEXTURE_2D, texture)
@@ -101,24 +109,34 @@ const startEngine = (gl, objData, textureData) => {
   loop(gl, programInfo, buffer, settings)
 }
 
-const main = async () => {
-  const canvas = document.getElementById('canvas')
+const initGl = canvasElementId => {
+  const canvas = document.getElementById(canvasElementId)
   const gl = canvas.getContext('webgl')
 
   if (!gl) {
     canvas.replaceWith('Browser does not support WebGL')
+    return null
+  }
+
+  return gl
+}
+
+const main = async () => {
+  const gl = initGl('canvas')
+  if (!gl) {
     return
   }
 
-  const objData = await objLoader(settings.objPath, settings.objFile)
+  const { objData, mtlData } = await objLoader({ ...settings.file })
 
-  console.log('obj parsed', objData)
+  console.log({ objData })
+  console.log({ mtlData })
 
-  const textureData = await textureLoader(objData.mtlData, settings)
+  const textureData = await textureLoader({ mtlData, basePath: settings.file.basePath })
 
   console.log({ textureData })
 
-  startEngine(gl, objData, textureData)
+  startEngine({ gl, objData, mtlData, textureData })
 }
 
 window.onload = main

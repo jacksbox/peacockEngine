@@ -4,13 +4,13 @@ import parseMtl from './parseMtl'
 
 const REGEX_MTL = /^mtllib\s+(.*)$/m
 
-const objLoader = async (path, url) => {
-  const objFile = await loadFile(`${path}/${url}`)
+const objLoader = async ({ filename, basePath }) => {
+  const objFile = await loadFile(`${basePath}/${filename}`)
 
   let mtlData = null
-  const [, match = null] = REGEX_MTL.exec(objFile) || [null, null]
-  if (match) {
-    const mtlFile = await loadFile(`${path}/${match}`)
+  const [, mtlFilePath = null] = REGEX_MTL.exec(objFile) || [null, null]
+  if (mtlFilePath) {
+    const mtlFile = await loadFile(`${basePath}/${mtlFilePath}`)
     mtlData = parseMtl(mtlFile)
   } else {
     console.info('No associated mtl file defined')
@@ -18,7 +18,10 @@ const objLoader = async (path, url) => {
 
   const objData = parseObj(objFile, mtlData)
 
-  return objData
+  return {
+    objData,
+    mtlData
+  }
 }
 
 export default objLoader
