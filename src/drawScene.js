@@ -1,3 +1,8 @@
+const camera = {
+  rX: 0,
+  rZ: 0
+}
+
 const drawScene = ({ gl, programInfo, buffers, glTextureData, settings, state }) => {
   gl.clearColor(0.3, 0.7, 1.0, 1.0) // Clear to black, fully opaque
   gl.clearDepth(1.0) // Clear everything
@@ -22,9 +27,12 @@ const drawScene = ({ gl, programInfo, buffers, glTextureData, settings, state })
   // const viewMatrix = mat4.create()
   // mat4.invert(viewMatrix, cameraMatrix)
   const { moveStraight, moveSide, rotateZ, rotateX } = state
+  camera.rZ += (settings.rotate ? state.deltaTime : 0) + rotateZ
+  camera.rX += rotateX
+
   mat4.translate(cameraMatrix, cameraMatrix, [moveSide, 0, moveStraight])
-  mat4.rotate(cameraMatrix, cameraMatrix, rotateX, [1, 0, 0])
-  mat4.rotate(cameraMatrix, cameraMatrix, settings.rotate ? rotateZ : rotateZ + state.deltaTime, [0, 1, 0])
+  mat4.rotate(cameraMatrix, cameraMatrix, camera.rX, [1, 0, 0])
+  mat4.rotate(cameraMatrix, cameraMatrix, camera.rZ, [0, 1, 0])
 
   // Tell WebGL how to pull out the positions from the position
   // buffer into the vertexPosition attribute.
