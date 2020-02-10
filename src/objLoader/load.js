@@ -12,6 +12,8 @@ const load = async (path, url) => {
   if (match) {
     const mtlFile = await loadFile(`${path}/${match}`)
     mtlData = parseMtl(mtlFile)
+  } else {
+    console.info('No associated mtl file defined')
   }
 
   const objData = parseObj(objFile, mtlData)
