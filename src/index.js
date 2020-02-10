@@ -6,6 +6,16 @@ import initBuffer from './initBuffer'
 import drawScene from './drawScene'
 import loop from './loop'
 
+const settingsDeerNoNormals = {
+  file: {
+    basePath: 'resources',
+    filename: 'deer_no_normals.obj'
+  },
+  zFar: 10000,
+  translate: [-0.0, -500.0, -5000.0],
+  rotate: true
+}
+
 const settingsDeer = {
   file: {
     basePath: 'resources',
@@ -46,8 +56,7 @@ const settingsPeacockWorld = {
   rotate: false
 }
 
-// const settings = settingsPeacockWorld
-const settings = settingsDeer
+const settings = settingsPeacockWorld
 
 const start = ({ gl, objData, textureData }) => {
   const glTextureData = textureData ? bindTextures(gl, textureData) : null

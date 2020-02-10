@@ -1,3 +1,5 @@
+import calcNormals from './calcNormals'
+
 const getKey = ({ v, vt, vn, m }) => `${v}_${vt}_${vn}_${m}`
 
 const rebuildIndex = ({ faces, positions, textures, normals }) => {
@@ -6,9 +8,10 @@ const rebuildIndex = ({ faces, positions, textures, normals }) => {
   const outFaces = []
   const outPositions = []
   const outMaterials = []
-  const outNormals = []
+  let outNormals = []
 
   let nextIndex = 0
+
   faces.forEach(face => {
     const { v, vt, vn, m } = face
     const key = getKey(face)
@@ -29,6 +32,10 @@ const rebuildIndex = ({ faces, positions, textures, normals }) => {
       nextIndex += 1
     }
   })
+
+  if (!normals.length) {
+    outNormals = calcNormals(outFaces, outPositions, nextIndex - 1)
+  }
 
   const outfacesCount = outFaces.length
 

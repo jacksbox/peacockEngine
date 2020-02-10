@@ -23,7 +23,7 @@ const parseTextures = matches =>
     parseFloat(matches[2])
   ]
 
-const parseIndex = value => parseInt(value, 10) - 1
+const parseIndex = value => (value ? parseInt(value, 10) - 1 : undefined)
 
 const parseFaces = matches =>
   // prettier-ignore
