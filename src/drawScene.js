@@ -1,6 +1,7 @@
-let cubeRotation = 0.0
+let cubeRotationZ = 0.0
+let cubeRotationX = 0.0
 
-const drawScene = ({ gl, programInfo, buffers, glTextureData, settings, deltaTime = 0, rotationUnit = 0 }) => {
+const drawScene = ({ gl, programInfo, buffers, glTextureData, settings, state }) => {
   gl.clearColor(0.3, 0.7, 1.0, 1.0) // Clear to black, fully opaque
   gl.clearDepth(1.0) // Clear everything
   gl.enable(gl.DEPTH_TEST) // Enable depth testing
@@ -19,12 +20,14 @@ const drawScene = ({ gl, programInfo, buffers, glTextureData, settings, deltaTim
 
   mat4.translate(modelViewMatrix, modelViewMatrix, settings.translate)
 
-  cubeRotation = rotationUnit
+  cubeRotationZ = state.rotateZ
   // TODO remove
   if (settings.rotate) {
-    cubeRotation += deltaTime
+    cubeRotationZ += state.deltaTime
   }
-  mat4.rotate(modelViewMatrix, modelViewMatrix, cubeRotation * 0.7, [0, 1, 0])
+  mat4.rotate(modelViewMatrix, modelViewMatrix, cubeRotationZ * 0.7, [0, 1, 0])
+  cubeRotationX = state.rotateX
+  mat4.rotate(modelViewMatrix, modelViewMatrix, cubeRotationX * 0.7, [1, 0, 0])
 
   // Tell WebGL how to pull out the positions from the position
   // buffer into the vertexPosition attribute.

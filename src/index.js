@@ -86,7 +86,7 @@ const start = ({ gl, objData, textureData }) => {
       buffers,
       glTextureData,
       settings,
-      ...state
+      state
     })
 
   loop(draw)
