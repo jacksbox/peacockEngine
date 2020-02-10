@@ -35,7 +35,7 @@ const drawScene = (gl, programInfo, buffers, settings, deltaTime = 0, rotationUn
     const stride = 0 // how many bytes to get from one set of values to the next
     // 0 = use type and numComponents above
     const offset = 0 // how many bytes inside the buffer to start from
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffers.position)
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffers.positionBuffer)
     gl.vertexAttribPointer(programInfo.attribLocations.vertexPosition, numComponents, type, normalize, stride, offset)
     gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition)
   }
@@ -47,7 +47,7 @@ const drawScene = (gl, programInfo, buffers, settings, deltaTime = 0, rotationUn
     const stride = 0 // how many bytes to get from one set of values to the next
     // 0 = use type and numComponents above
     const offset = 0 // how many bytes inside the buffer to start from
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffers.materials)
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffers.materialBuffer)
     gl.vertexAttribPointer(programInfo.attribLocations.vertextMaterial, numComponents, type, normalize, stride, offset)
     gl.enableVertexAttribArray(programInfo.attribLocations.vertextMaterial)
   }
@@ -62,13 +62,13 @@ const drawScene = (gl, programInfo, buffers, settings, deltaTime = 0, rotationUn
     const stride = 0 // how many bytes to get from one set of values to the next
     // 0 = use type and numComponents above
     const offset = 0 // how many bytes inside the buffer to start from
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffers.normal)
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffers.normalBuffer)
     gl.vertexAttribPointer(programInfo.attribLocations.vertextNormal, numComponents, type, normalize, stride, offset)
     gl.enableVertexAttribArray(programInfo.attribLocations.vertextNormal)
   }
 
   // Tell WebGL which indices to use to index the vertices
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.index)
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.indexBuffer)
 
   // Tell WebGL to use our program when drawing
   gl.useProgram(programInfo.program)
@@ -87,7 +87,8 @@ const drawScene = (gl, programInfo, buffers, settings, deltaTime = 0, rotationUn
   {
     const type = gl.UNSIGNED_SHORT
     const offset = 0
-    gl.drawElements(gl.TRIANGLES, buffers.indexCount, type, offset)
+    const { indexCount } = buffers
+    gl.drawElements(gl.TRIANGLES, indexCount, type, offset)
   }
 }
 
