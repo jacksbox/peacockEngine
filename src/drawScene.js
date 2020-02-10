@@ -1,6 +1,3 @@
-let cubeRotationZ = 0.0
-let cubeRotationX = 0.0
-
 const drawScene = ({ gl, programInfo, buffers, glTextureData, settings, state }) => {
   gl.clearColor(0.3, 0.7, 1.0, 1.0) // Clear to black, fully opaque
   gl.clearDepth(1.0) // Clear everything
@@ -18,16 +15,15 @@ const drawScene = ({ gl, programInfo, buffers, glTextureData, settings, state })
 
   const modelViewMatrix = mat4.create()
 
-  mat4.translate(modelViewMatrix, modelViewMatrix, settings.translate)
+  const cameraMatrix = mat4.create()
 
-  cubeRotationZ = state.rotateZ
-  // TODO remove
-  if (settings.rotate) {
-    cubeRotationZ += state.deltaTime
-  }
-  mat4.rotate(modelViewMatrix, modelViewMatrix, cubeRotationZ * 0.7, [0, 1, 0])
-  cubeRotationX = state.rotateX
-  mat4.rotate(modelViewMatrix, modelViewMatrix, cubeRotationX * 0.7, [1, 0, 0])
+  // const viewMatrix = mat4.create()
+  // mat4.invert(viewMatrix, cameraMatrix)
+  const { moveStraight, moveSide, rotateZ, rotateX } = state
+  mat4.translate(cameraMatrix, cameraMatrix, settings.translate)
+  mat4.translate(cameraMatrix, cameraMatrix, [moveSide, 0, moveStraight])
+  mat4.rotate(cameraMatrix, cameraMatrix, settings.rotate ? rotateZ : rotateZ + state.deltaTime, [0, 1, 0])
+  mat4.rotate(cameraMatrix, cameraMatrix, rotateX, [1, 0, 0])
 
   // Tell WebGL how to pull out the positions from the position
   // buffer into the vertexPosition attribute.
@@ -78,6 +74,7 @@ const drawScene = ({ gl, programInfo, buffers, glTextureData, settings, state })
 
   // Set the shader uniforms
   gl.uniformMatrix4fv(programInfo.uniformLocations.projectionMatrix, false, projectionMatrix)
+  gl.uniformMatrix4fv(programInfo.uniformLocations.viewMatrix, false, cameraMatrix)
   gl.uniformMatrix4fv(programInfo.uniformLocations.modelViewMatrix, false, modelViewMatrix)
   gl.uniformMatrix4fv(programInfo.uniformLocations.normalMatrix, false, normalMatrix)
 

@@ -3,6 +3,8 @@ const loop = draw => {
 
   let rotateZ = 0
   let rotateX = 0
+  let moveStraight = 0
+  let moveSide = 0
   document.addEventListener('keydown', event => {
     if (event.isComposing) {
       return
@@ -17,6 +19,15 @@ const loop = draw => {
     } else if (event.keyCode === 40) {
       rotateX -= 0.1
     }
+    if (event.keyCode === 87) {
+      moveStraight += 10
+    } else if (event.keyCode === 65) {
+      moveSide += 10
+    } else if (event.keyCode === 83) {
+      moveStraight -= 10
+    } else if (event.keyCode === 68) {
+      moveSide -= 10
+    }
   })
 
   const render = now => {
@@ -24,7 +35,7 @@ const loop = draw => {
     const deltaTime = nowS - then
     then = nowS
 
-    draw({ deltaTime, rotateZ, rotateX })
+    draw({ deltaTime, rotateZ, rotateX, moveStraight, moveSide })
 
     requestAnimationFrame(render)
   }

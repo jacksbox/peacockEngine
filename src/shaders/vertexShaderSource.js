@@ -3,15 +3,16 @@ attribute vec4 aVertexPosition;
 attribute vec3 aVertextMaterial;
 attribute vec3 aVertexNormal;
 
-uniform mat4 uNormalMatrix;
-uniform mat4 uModelViewMatrix;
 uniform mat4 uProjectionMatrix;
+uniform mat4 uViewMatrix;
+uniform mat4 uModelViewMatrix;
+uniform mat4 uNormalMatrix;
 
 varying highp vec3 vMaterial;
 varying highp vec3 vLighting;
 
 void main() {
-  gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
+  gl_Position = uProjectionMatrix * uViewMatrix * uModelViewMatrix * aVertexPosition;
   vMaterial = aVertextMaterial;
 
 
