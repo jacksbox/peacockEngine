@@ -14,16 +14,17 @@ const drawScene = ({ gl, programInfo, buffers, glTextureData, settings, state })
   mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar)
 
   const modelViewMatrix = mat4.create()
+  // move object to initial position
+  mat4.translate(modelViewMatrix, modelViewMatrix, settings.translate)
 
   const cameraMatrix = mat4.create()
 
   // const viewMatrix = mat4.create()
   // mat4.invert(viewMatrix, cameraMatrix)
   const { moveStraight, moveSide, rotateZ, rotateX } = state
-  mat4.translate(cameraMatrix, cameraMatrix, settings.translate)
   mat4.translate(cameraMatrix, cameraMatrix, [moveSide, 0, moveStraight])
-  mat4.rotate(cameraMatrix, cameraMatrix, settings.rotate ? rotateZ : rotateZ + state.deltaTime, [0, 1, 0])
   mat4.rotate(cameraMatrix, cameraMatrix, rotateX, [1, 0, 0])
+  mat4.rotate(cameraMatrix, cameraMatrix, settings.rotate ? rotateZ : rotateZ + state.deltaTime, [0, 1, 0])
 
   // Tell WebGL how to pull out the positions from the position
   // buffer into the vertexPosition attribute.
