@@ -77,7 +77,8 @@ const start = ({ gl, objData, textureData }) => {
       projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
       viewMatrix: gl.getUniformLocation(shaderProgram, 'uViewMatrix'),
       modelViewMatrix: gl.getUniformLocation(shaderProgram, 'uModelViewMatrix'),
-      normalMatrix: gl.getUniformLocation(shaderProgram, 'uNormalMatrix')
+      normalMatrix: gl.getUniformLocation(shaderProgram, 'uNormalMatrix'),
+      lightVector: gl.getUniformLocation(shaderProgram, 'ulightVector')
     }
   }
 
