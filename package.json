@@ -1,7 +1,7 @@
 {
   "name": "peacockEngine",
   "version": "0.0.1",
-  "description": "simple javascript webgl engine",
+  "description": "simple javascript/webgl engine (very wip playgound)",
   "main": "index.html",
   "author": "Mario Jäckle<github@jacksbox.de>",
   "license": "MIT",

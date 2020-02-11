@@ -5,28 +5,48 @@ const loop = draw => {
   let rotateX = 0
   let moveStraight = 0
   let moveSide = 0
+
+  const cameraMod = {
+    position: {
+      x: 0,
+      y: 0,
+      z: 0
+    },
+    rotation: {
+      x: 0,
+      y: 0,
+      z: 0
+    }
+  }
+
   document.addEventListener('keydown', event => {
     if (event.isComposing) {
       return
     }
 
     if (event.keyCode === 37) {
-      rotateZ -= 0.1
+      // LEFT
     } else if (event.keyCode === 39) {
-      rotateZ += 0.1
+      // RIGHT
     } else if (event.keyCode === 38) {
-      rotateX += 0.1
+      // UP
+      cameraMod.rotation.x -= 10
     } else if (event.keyCode === 40) {
-      rotateX -= 0.1
+      // DOWN
+      cameraMod.rotation.x += 10
     }
     if (event.keyCode === 87) {
-      moveStraight += 10
+      // W
+      cameraMod.position.z += 10
     } else if (event.keyCode === 65) {
-      moveSide += 10
+      // A
+      cameraMod.rotation.y -= 10
     } else if (event.keyCode === 83) {
-      moveStraight -= 10
+      // S
+      cameraMod.position.z -= 10
     } else if (event.keyCode === 68) {
-      moveSide -= 10
+      // D
+      cameraMod.rotation.y += 10
     }
   })
 
@@ -35,7 +55,7 @@ const loop = draw => {
     const deltaTime = nowS - then
     then = nowS
 
-    draw({ deltaTime, rotateZ, rotateX, moveStraight, moveSide })
+    draw({ deltaTime, cameraMod })
 
     requestAnimationFrame(render)
   }

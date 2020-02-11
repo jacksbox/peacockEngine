@@ -1,7 +1,4 @@
-const camera = {
-  rX: 0,
-  rZ: 0
-}
+const degToRad = deg => (deg * Math.PI) / 180
 
 const drawScene = ({ gl, programInfo, buffers, glTextureData, settings, state }) => {
   gl.clearColor(0.3, 0.7, 1.0, 1.0) // Clear to black, fully opaque
@@ -26,13 +23,64 @@ const drawScene = ({ gl, programInfo, buffers, glTextureData, settings, state })
 
   // const viewMatrix = mat4.create()
   // mat4.invert(viewMatrix, cameraMatrix)
-  const { moveStraight, moveSide, rotateZ, rotateX } = state
-  camera.rZ += (settings.rotate ? state.deltaTime : 0) + rotateZ
-  camera.rX += rotateX
+  const {
+    cameraMod: { position, rotation }
+  } = state
+  // camera.rZ += (settings.rotate ? state.deltaTime : 0) + rotateZ
+  // camera.rX += rotateX
 
-  mat4.translate(cameraMatrix, cameraMatrix, [moveSide, 0, moveStraight])
-  mat4.rotate(cameraMatrix, cameraMatrix, camera.rX, [1, 0, 0])
-  mat4.rotate(cameraMatrix, cameraMatrix, camera.rZ, [0, 1, 0])
+  const angleX = degToRad(rotation.x)
+  const angleY = degToRad(rotation.y)
+  const angleZ = degToRad(rotation.z)
+
+  const { cos, sin } = Math
+
+  // prettier-ignore
+  const rotX = mat4.fromValues(
+    1, 0, 0, 0,
+
+    0,
+    cos(angleX),
+    sin(angleX),
+    0,
+
+    0,
+    -sin(angleX),
+    cos(angleX),
+    0,
+
+    0, 0, 0, 1
+  )
+  // prettier-ignore
+  const rotY = mat4.fromValues(
+    cos(angleY),
+    0,
+    -sin(angleY),
+    0,
+
+    0, 1, 0, 0,
+
+    sin(angleY),
+    0,
+    cos(angleY),
+    0,
+
+    0, 0, 0, 1
+  )
+
+  const rotZ = mat4.fromValues(cos(angleZ), sin(angleZ), 0, 0, -sin(angleZ), cos(angleZ), 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
+  // mat4.rotate(rotX, rotX, degToRad(rotation.x), [1, 0, 0])
+  // mat4.rotate(rotY, rotY, degToRad(rotation.y), [0, 1, 0])
+  const rot = mat4.create()
+  mat4.multiply(rot, rotY, rotX)
+  mat4.multiply(rot, rot, rotZ)
+
+  mat4.translate(cameraMatrix, cameraMatrix, [position.x, position.y, position.z])
+  mat4.multiply(cameraMatrix, cameraMatrix, rot)
+  // mat4.rotate(cameraMatrix, cameraMatrix, degToRad(rotation.y), [0, 1, 0])
+  // mat4.rotate(cameraMatrix, cameraMatrix, degToRad(rotation.x), [1, 0, 0])
+  // mat4.rotate(cameraMatrix, cameraMatrix, camera.rZ, [0, 1, 0])
+  // mat4.invert(cameraMatrix, cameraMatrix)
 
   // Tell WebGL how to pull out the positions from the position
   // buffer into the vertexPosition attribute.
