@@ -56,9 +56,7 @@ const settingsPeacockWorld = {
   rotate: false
 }
 
-const settings = settingsPeacockWorld
-
-const start = ({ gl, objData, textureData }) => {
+const start = ({ gl, objData, textureData, settings }) => {
   const glTextureData = textureData ? bindTextures(gl, textureData) : null
 
   // TEXTURES LOADED
@@ -119,6 +117,19 @@ const initGl = canvasElementId => {
 }
 
 const main = async () => {
+  const params = new URLSearchParams(window.location.search)
+  const model = params.get('m')
+  let settings = settingsPeacockWorld
+  switch (model) {
+    case 'deer':
+      settings = settingsDeer
+      break
+    case 'deerNormals':
+      settings = settingsDeerNoNormals
+      break
+    default:
+  }
+
   const gl = initGl('canvas')
   if (!gl) {
     return
@@ -135,7 +146,7 @@ const main = async () => {
   // TEXTURE FILES LOADED
   console.log({ textureData })
 
-  start({ gl, objData, textureData })
+  start({ gl, objData, textureData, settings })
 }
 
 window.onload = main
