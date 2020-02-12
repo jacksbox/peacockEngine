@@ -12,7 +12,7 @@ const settingsDeerNoNormals = {
     filename: 'deer_no_normals.obj'
   },
   zFar: 10000,
-  translate: [-0.0, -500.0, -5000.0],
+  translate: [-0.0, -500.0, -3000.0],
   rotate: true
 }
 
@@ -22,7 +22,7 @@ const settingsDeer = {
     filename: 'deer.obj'
   },
   zFar: 10000,
-  translate: [-0.0, -500.0, -5000.0],
+  translate: [-0.0, -500.0, -3000.0],
   rotate: true
 }
 
