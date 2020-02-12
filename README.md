@@ -26,7 +26,9 @@
 
 - http://127.0.0.1:8080/ <br>
   **peacock**, textures and normals from obj/mtl file
-- http://127.0.0.1:8080/?m=deer <br>
+- http://127.0.0.1:8080/?m=color <br>
   **deer**, colors instead of textures
-- http://127.0.0.1:8080/?m=deerNormals <br>
-  **deer**, no colors, computed normals
+- http://127.0.0.1:8080/?m=faceNormals <br>
+  **deer**, no colors, computed normals (per face)
+- http://127.0.0.1:8080/?m=vertexNormals <br>
+  **deer**, no colors, computed normals (per vertex)
