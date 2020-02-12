@@ -6,7 +6,8 @@ import initBuffer from './initBuffer'
 import drawScene from './drawScene'
 import loop from './loop'
 
-const settingsDeerNoNormals = {
+const settingsDeerCalcNormalsFace = {
+  queryParam: 'faceNormals',
   file: {
     basePath: 'resources',
     filename: 'deer_no_normals.obj'
@@ -16,7 +17,20 @@ const settingsDeerNoNormals = {
   rotate: true
 }
 
+const settingsDeerCalcNormalsVertex = {
+  queryParam: 'vertexNormals',
+  file: {
+    basePath: 'resources',
+    filename: 'deer_no_normals.obj'
+  },
+  zFar: 10000,
+  translate: [-0.0, -500.0, -3000.0],
+  rotate: true,
+  vertexNormals: true
+}
+
 const settingsDeer = {
+  queryParam: 'color',
   file: {
     basePath: 'resources',
     filename: 'deer.obj'
@@ -26,27 +40,8 @@ const settingsDeer = {
   rotate: true
 }
 
-const settingsPeacock1 = {
-  file: {
-    basePath: 'resources',
-    filename: 'Peacock_1.obj'
-  },
-  zFar: 10000,
-  translate: [-0.0, -2.0, -5.0],
-  rotate: false
-}
-
-const settingsPeacock2 = {
-  file: {
-    basePath: 'resources',
-    filename: 'Peacock_2.obj'
-  },
-  zFar: 10000,
-  translate: [-0.0, -2.0, -10.0],
-  rotate: true
-}
-
 const settingsPeacockWorld = {
+  queryParam: 'peacock',
   file: {
     basePath: 'resources',
     filename: 'Peacock_World4.obj'
@@ -55,6 +50,13 @@ const settingsPeacockWorld = {
   translate: [0, -50.0, -200.0],
   rotate: false
 }
+
+const availableSettings = [
+  settingsPeacockWorld,
+  settingsDeer,
+  settingsDeerCalcNormalsVertex,
+  settingsDeerCalcNormalsFace
+]
 
 const start = ({ gl, objData, textureData, settings }) => {
   const glTextureData = textureData ? bindTextures(gl, textureData) : null
@@ -119,23 +121,14 @@ const initGl = canvasElementId => {
 const main = async () => {
   const params = new URLSearchParams(window.location.search)
   const model = params.get('m')
-  let settings = settingsPeacockWorld
-  switch (model) {
-    case 'deer':
-      settings = settingsDeer
-      break
-    case 'deerNormals':
-      settings = settingsDeerNoNormals
-      break
-    default:
-  }
+  const settings = availableSettings.find(setting => setting.queryParam === model) || availableSettings[0]
 
   const gl = initGl('canvas')
   if (!gl) {
     return
   }
 
-  const { objData, mtlData } = await objLoader({ ...settings.file })
+  const { objData, mtlData } = await objLoader({ ...settings.file, vertexNormals: settings.vertexNormals })
 
   // OBJ & MTL PARSED
   console.log({ objData })

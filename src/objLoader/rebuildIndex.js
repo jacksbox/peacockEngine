@@ -3,19 +3,30 @@ import calcVectorNormals from './calcVectorNormals'
 
 const getKey = ({ v, vt, vn, m }) => `${v}_${vt}_${vn}_${m}`
 
-const rebuildIndex = ({ faces, positions, textures, normals }) => {
+const rebuildIndex = ({ faces, positions, textures, normals, vertexNormals }) => {
   const keyToFaceMap = {}
 
   const maxFaceIndex = faces.length
 
-  let inNormals = normals
+  let inNormals
   if (!normals.length) {
     const facesCombined = []
     for (let i = 0; i < faces.length; i += 3) {
       facesCombined.push([faces[i], faces[i + 1], faces[i + 2]])
     }
     inNormals = calcFaceNormals(facesCombined, positions, maxFaceIndex)
-    // outNormals = calcVectorNormals(outFaces, outNormals, maxFaceIndex)
+    console.log({
+      facesCombined,
+      inNormals
+    })
+    if (vertexNormals) {
+      inNormals = calcVectorNormals(facesCombined, inNormals)
+    }
+  } else {
+    inNormals = normals.reduce((acc, normal) => {
+      acc.push(...normal)
+      return acc
+    }, [])
   }
 
   const outFaces = []

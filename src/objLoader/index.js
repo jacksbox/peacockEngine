@@ -4,7 +4,7 @@ import parseMtl from './parseMtl'
 
 const REGEX_MTL = /^mtllib\s+(.*)$/m
 
-const objLoader = async ({ filename, basePath }) => {
+const objLoader = async ({ filename, basePath, vertexNormals }) => {
   const objFile = await loadFile(`${basePath}/${filename}`)
 
   let mtlData = null
@@ -16,7 +16,7 @@ const objLoader = async ({ filename, basePath }) => {
     console.info('No associated mtl file defined')
   }
 
-  const objData = parseObj(objFile, mtlData)
+  const objData = parseObj({ text: objFile, mtlData, vertexNormals })
 
   return {
     objData,

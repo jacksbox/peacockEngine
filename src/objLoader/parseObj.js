@@ -43,7 +43,7 @@ const parseFaces = matches =>
 
 const withMaterial = (faces, material) => faces.map(face => ({ ...face, m: material }))
 
-const parseObj = (text, mtlData = null) => {
+const parseObj = ({ text, mtlData, vertexNormals }) => {
   const lines = text.split('\n')
 
   const positions = []
@@ -99,7 +99,8 @@ const parseObj = (text, mtlData = null) => {
     faces: facesWithMaterial,
     positions,
     textures,
-    normals
+    normals,
+    vertexNormals
   })
 
   return computedObjData
