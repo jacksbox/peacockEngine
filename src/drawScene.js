@@ -18,6 +18,7 @@ const drawScene = ({ gl, programInfo, buffers, glTextureData, settings, state })
   const modelViewMatrix = mat4.create()
   mat4.translate(modelViewMatrix, modelViewMatrix, settings.translate)
 
+  mat4.translate(modelViewMatrix, modelViewMatrix, [0, 0, state.move])
   mat4.rotate(modelViewMatrix, modelViewMatrix, state.rotation, [0, 1, 0])
 
   // Tell WebGL how to pull out the positions from the position
