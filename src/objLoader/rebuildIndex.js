@@ -1,14 +1,27 @@
-import calcNormals from './calcNormals'
+import calcFaceNormals from './calcFaceNormals'
+import calcVectorNormals from './calcVectorNormals'
 
 const getKey = ({ v, vt, vn, m }) => `${v}_${vt}_${vn}_${m}`
 
 const rebuildIndex = ({ faces, positions, textures, normals }) => {
   const keyToFaceMap = {}
 
+  const maxFaceIndex = faces.length
+
+  let inNormals = normals
+  if (!normals.length) {
+    const facesCombined = []
+    for (let i = 0; i < faces.length; i += 3) {
+      facesCombined.push([faces[i], faces[i + 1], faces[i + 2]])
+    }
+    inNormals = calcFaceNormals(facesCombined, positions, maxFaceIndex)
+    // outNormals = calcVectorNormals(outFaces, outNormals, maxFaceIndex)
+  }
+
   const outFaces = []
   const outPositions = []
   const outMaterials = []
-  let outNormals = []
+  const outNormals = []
 
   let nextIndex = 0
 
@@ -25,17 +38,13 @@ const rebuildIndex = ({ faces, positions, textures, normals }) => {
         outMaterials.push(...textures[vt], m)
       }
       if (typeof vn !== 'undefined') {
-        outNormals.push(...normals[vn])
+        outNormals.push(inNormals[vn * 3], inNormals[vn * 3 + 1], inNormals[vn * 3 + 2])
       }
 
       keyToFaceMap[key] = nextIndex
       nextIndex += 1
     }
   })
-
-  if (!normals.length) {
-    outNormals = calcNormals(outFaces, outPositions, nextIndex - 1)
-  }
 
   const outfacesCount = outFaces.length
 
