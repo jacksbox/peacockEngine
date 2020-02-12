@@ -30,6 +30,8 @@ const loadShader = (gl, type, source) => {
 const initShaderProgram = (gl, glTextureData) => {
   const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vertexShaderSource)
 
+  console.log(fragmentShaderSource(glTextureData))
+
   const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource(glTextureData))
 
   // Create the shader program

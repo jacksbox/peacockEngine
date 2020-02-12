@@ -120,6 +120,7 @@ const main = async () => {
   const params = new URLSearchParams(window.location.search)
   const model = params.get('m')
   let settings = settingsPeacockWorld
+
   switch (model) {
     case 'deer':
       settings = settingsDeer

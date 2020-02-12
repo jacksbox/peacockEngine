@@ -5,7 +5,7 @@ varying highp vec3 vMaterial;
 
 ${
   glTextureData
-    ? glTextureData.map(({ name, glTexture }) => (glTexture ? `uniform sampler2D ${name};` : null)).join('\n')
+    ? glTextureData.map(({ name, glTexture }) => (glTexture ? `uniform sampler2D u${name};` : null)).join('\n')
     : ''
 }
 
@@ -20,7 +20,7 @@ void main() {
           .map(({ id, name, Kd, glTexture }) => {
             let line = `if(vMaterial[2] == ${id}.0) {\n`
             if (glTexture) {
-              line = `${line}    color = texture2D(${name}, vec2(vMaterial.x, vMaterial.y));`
+              line = `${line}    color = texture2D(u${name}, vec2(vMaterial.x, vMaterial.y));`
             } else if (Kd) {
               line = `${line}    color = vec4(vec3(${Kd.join(', ')}), 1.0);`
             } else {
