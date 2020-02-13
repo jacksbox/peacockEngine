@@ -18,14 +18,14 @@ const calcVectorNormals = (faces, faceNormals) => {
       const adjacentFaces = findAdjacentFaces(v, faces)
       let num = adjacentFaces.length
       let newVN = [
-        faceNormals[adjacentFaces[0][0].vn * 3],
-        faceNormals[adjacentFaces[0][0].vn * 3 + 1],
-        faceNormals[adjacentFaces[0][0].vn * 3 + 2]
+        faceNormals[adjacentFaces[0][0].oVN * 3],
+        faceNormals[adjacentFaces[0][0].oVN * 3 + 1],
+        faceNormals[adjacentFaces[0][0].oVN * 3 + 2]
       ]
       for (let i = 1; i < num; i += 1) {
-        newVN[0] += faceNormals[adjacentFaces[i][0].vn * 3]
-        newVN[1] += faceNormals[adjacentFaces[i][0].vn * 3 + 1]
-        newVN[2] += faceNormals[adjacentFaces[i][0].vn * 3 + 2]
+        newVN[0] += faceNormals[adjacentFaces[i][0].oVN * 3]
+        newVN[1] += faceNormals[adjacentFaces[i][0].oVN * 3 + 1]
+        newVN[2] += faceNormals[adjacentFaces[i][0].oVN * 3 + 2]
       }
       newVN = newVN.map(pos => pos / num)
       normals.push(...newVN)

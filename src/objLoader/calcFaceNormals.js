@@ -49,6 +49,7 @@ const calcFaceNormals = (faces, positions, max) => {
 
     for (let j = 0; j < 3; j += 1) {
       face[0 + j].vn = index
+      face[0 + j].oVN = index
       normals[index * 3] = faceNormale.x
       normals[index * 3 + 1] = faceNormale.y
       normals[index * 3 + 2] = faceNormale.z
